@@ -1,0 +1,32 @@
+Akses Internet dari VPCS to Managament Cloud Internet(8.8.8.8)
+
+VPCS
+ip 192.168.1.100/24 192.168.1.1
+
+Switch Transparent
+
+Router
+
+int fa0/1
+192.168.1.1 255.255.255.0
+no sh
+
+int fa0/0
+ip add dhcp
+no sh
+
+
+Verifikasi:
+
+Router
+sh ip int br
+sh ip route
+ping 192.168.1.100
+ping google.com
+
+VPCS
+ping 192.168.1.1
+ping 8.8.8.8
+
+CMD
+ipconfig

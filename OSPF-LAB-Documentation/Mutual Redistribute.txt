@@ -1,0 +1,85 @@
+Router1
+
+int fa0/0
+ip add 12.12.12.1 255.255.255.0
+no sh
+
+router rip
+ve 2
+no aut
+net 12.12.12.0
+
+Router2
+
+int fa0/0
+ip add 12.12.12.2 255.255.255.0
+no sh
+
+int fa0/1
+ip add 23.23.23.2 255.255.255.0
+no sh
+
+router rip
+ve 2
+no aut
+net 12.12.12.0
+redistribute ospf 1 metric 1
+
+router ospf 1 
+net 23.23.23.0 0.0.0.255 area 0
+redistribute rip subnets
+
+
+Router3
+int fa0/0
+ip add 23.23.23.3 255.255.255.0
+no sh
+
+int fa0/1
+ip add 34.34.34.3 255.255.255.0
+no sh
+
+router ospf 1
+network 23.23.23.0 0.0.0.255 area 0
+redistribute eigrp 1 subnets
+
+router eigrp 1
+no auto
+net 34.34.34.0
+redistribute ospf 1 metric 1 1 1 1 1
+
+
+Router4
+int fa0/0
+ip add 34.34.34.4 255.255.255.0
+no sh
+
+int fa0/1
+ip add 45.45.45.4 255.255.255.0
+no sh
+
+router eigrp 1
+no auto
+network 34.34.34.0
+redistribute rip metric 1 1 1 1 1
+
+router rip
+ve 2
+no auto
+net 45.45.45.0
+redistribute eigrp 1 metric 1
+
+
+Router5
+int fa0/0
+ip add 45.45.45.5 255.255.255.0
+no sh
+
+router rip
+ve 2
+no auto
+net 45.45.45.0
+
+
+Verifikasi Pada Router 1-5
+show ip route

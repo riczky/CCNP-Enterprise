@@ -1,0 +1,53 @@
+Konfigurasi Router1
+int fa0/0
+ip add 192.168.1.1 255.255.255.0
+no sh
+
+int lo0
+ip add 1.1.1.1 255.255.255.255
+
+router ospf 10
+network 192.168.1.0 0.0.0.255 area 0
+network 1.1.1.1 0.0.0.0 area 0
+
+Konfigurasi Router 2
+int fa0/0
+ip add 192.168.1.2 255.255.255.0
+no sh
+
+int fa0/1
+ip add 172.16.1.1 255.255.255.0
+no sh
+
+router ospf 10
+network 192.168.1.0 0.0.0.255 area 0
+
+router bgp 100
+neighbor 172.16.1.2 remote-as 200
+network 172.16.1.0 mask 255.255.255.0
+
+
+Konfigurasi Router3
+int fa0/0
+ip add 172.16.1.2 255.255.255.0
+no sh
+
+int lo0
+ip add 3.3.3.3 255.255.255.255
+
+router bgp 200
+neighbor 172.16.1.1 remote-as 100
+network 3.3.3.3 mask 255.255.255.255
+
+
+
+
+Check sh ip route pada Router1 dan Test Ping antar Loopback
+
+Konfigurasi Redistribuote pada Router 2
+router ospf 10
+redistribute bgp 100 subnets 
+
+
+router bgp 100
+redistribute ospf 10

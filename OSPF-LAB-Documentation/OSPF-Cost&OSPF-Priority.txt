@@ -1,0 +1,94 @@
+OSPF Cost & Priority
+
+Router1
+
+hostname Router1
+int fa0/1
+ip add 24.24.24.1 255.255.255.0
+no sh
+
+int fa0/0
+ip add 12.12.12.1 255.255.255.0
+no sh
+
+int lo0
+ip add 1.1.1.1 255.255.255.255
+
+router ospf 1
+network 24.24.24.0 0.0.0.255 area 0
+network 12.12.12.0 0.0.0.255 area 0
+network 1.1.1.1 0.0.0.0 area 0
+
+Router 2
+hostname Router2
+int fa0/0
+ip add 24.24.24.2 255.255.255.0
+no sh
+
+int fa0/1
+ip add 25.25.25.2 255.255.255.0
+no sh
+
+int lo0
+ip add 2.2.2.2 255.255.255.255
+
+router ospf 1
+network 24.24.24.0 0.0.0.255 area 0
+network 25.25.25.0 0.0.0.255 area 0
+network 2.2.2.2 0.0.0.0 area 0
+
+Router3
+hostname Router3
+int fa0/0
+ip add 25.25.25.1 255.255.255.0
+no sh
+
+int fa0/1
+ip add 13.13.13.2 255.255.255.0
+no sh
+
+int lo0
+ip add 3.3.3.3 255.255.255.255
+
+router ospf 1
+network 25.25.25.0 0.0.0.255 area 0
+network 13.13.13.0 0.0.0.255 area 0
+network 3.3.3.3 0.0.0.0 area 0
+
+
+
+Router4
+hostname Router4
+int fa0/0
+ip add 12.12.12.2 255.255.255.0
+no sh
+
+int fa0/1
+ip add 13.13.13.1 255.255.255.0
+no sh
+
+int lo0
+ip add 4.4.4.4 255.255.255.255
+
+router ospf 1
+network 12.12.12.0 0.0.0.255 area 0
+network 13.13.13.0 0.0.0.255 area 0
+network 4.4.4.4 0.0.0.0 area 0
+
+
+==================================================
+Konfigurasi Cost Pada Interface di Router2
+
+
+Router2(config)#int fa0/0
+Router2(config-if)#ip ospf cost 12
+Router2(config-if)#int fa0/1
+Router2(config-if)#ip ospf cost 5
+
+
+
+
+
+
+
+ 

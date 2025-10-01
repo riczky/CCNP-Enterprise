@@ -1,0 +1,46 @@
+Router1
+
+int fa0/0
+no sh
+ip add 12.12.12.1 255.255.255.0
+
+int lo0
+ip add 1.1.1.1 255.255.255.255
+
+router eigrp 1
+no auto
+net 1.1.1.0
+
+router ospf 1
+net 12.12.12.0 0.0.0.255 are 0
+redistribute eigrp 1 subnets
+
+
+
+Router2
+
+int fa0/0
+no sh
+ip add 12.12.12.2 255.255.255.0
+
+int fa0/1
+no sh
+ip add 23.23.23.2 255.255.255.0
+
+router ospf 1
+net 12.12.12.0 0.0.0.255 are 0
+net 23.23.23.0 0.0.0.255 are 1
+
+
+
+Router3
+
+int fa0/0
+no sh                          
+ip add 23.23.23.3 255.255.255.0
+
+router ospf 1
+net 23.23.23.0 0.0.0.255 are 1
+
+
+

@@ -1,0 +1,79 @@
+Router1
+
+int fa0/0
+no sh
+ip add 12.12.12.1 255.255.255.0
+
+int lo0
+ip add 1.1.1.1 255.255.255.255
+
+router eigrp 1
+no auto
+net 1.1.1.0
+
+router ospf 1
+net 12.12.12.0 0.0.0.255 are 0
+redistribute eigrp 1 subnets
+
+
+
+Router2
+
+int fa0/0
+no sh
+ip add 12.12.12.2 255.255.255.0
+
+int fa0/1
+no sh
+ip add 23.23.23.2 255.255.255.0
+
+router ospf 1
+net 12.12.12.0 0.0.0.255 are 0
+net 23.23.23.0 0.0.0.255 are 1
+
+
+
+Router3
+
+int fa0/0
+no sh                          
+ip add 23.23.23.3 255.255.255.0
+
+router ospf 1
+net 23.23.23.0 0.0.0.255 are 1
+
+int lo0
+ip add 3.3.3.3 255.255.255.255
+
+router rip
+version 2
+no auto
+net 3.3.3.0
+
+router ospf 1
+redistribute rip subnets
+
+
+================================================
+Config stub area pada router2 dan router 3
+
+Router2(config)#router ospf 1
+Router2(config-router)#area 1 stub
+
+
+Router3(config)#router ospf 1
+Router3(config-router)#area 1 stub
+
+
+===================================================
+Change stub to NSSA
+
+Config Router2
+R2(config)#router ospf 1
+R2(config-router)#no area 1 stub 
+R2(config-router)#area 1 nssa default-information-originate
+
+Config Router3
+R3(config)#router ospf 1
+R3(config-router)#no area 1 stub
+R3(config-router)#area 1 nssa

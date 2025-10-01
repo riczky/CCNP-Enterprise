@@ -1,0 +1,104 @@
+Router1
+
+int fa0/0
+ip add 12.12.12.1 255.255.255.0
+no sh
+
+int lo0
+ip add 11.11.11.1 255.255.255.255
+
+int lo1
+ip add 11.11.11.2 255.255.255.255
+
+int lo2
+ip add 11.11.11.3 255.255.255.255
+
+int lo3
+ip add 11.11.11.4 255.255.255.255
+
+int lo4
+ip add 11.11.11.5 255.255.255.255
+
+int lo5
+ip add 11.11.11.6 255.255.255.255
+
+
+router ospf 1
+network 12.12.12.0 0.0.0.255 area 0
+redistribute rip subnets
+
+router rip
+ve 2
+no aut
+net 11.11.11.0
+
+
+Router 2
+
+int fa0/0
+ip add 12.12.12.2 255.255.255.0
+no sh
+
+int fa0/1
+ip add 23.23.23.2 255.255.255.0
+no sh
+
+router ospf 1
+network 12.12.12.0 0.0.0.255 area 0
+network 23.23.23.0 0.0.0.255 area 0
+
+Router 3
+
+int fa0/0
+ip add 23.23.23.3 255.255.255.0
+no sh
+
+router ospf 1
+network 23.23.23.0 0.0.0.255 area 0
+
+
+====================================================================
+Summaryzation Router1
+===================================================================
+
+router ospf 1
+redistribute connected subnets
+summary-address 11.11.11.0 255.255.255.248
+area 1 range 11.11.11.0 255.255.255.248
+
+
+===============================================================
+Konfigurasi seolah-olah Router3 terhubung dengan Internet
+===============================================================
+int fa0/1
+ip add 10.10.10.2 255.255.255.0
+no sh
+
+ip route 0.0.0.0 0.0.0.0 10.10.10.1
+
+router ospf 1
+default-information originate
+
+
+============================================================
+Konfigurasi Debug packet pada router 1
+============================================================
+debug ip packet detail
+
+Rollback:
+no debug ip packet detail
+
+
+============================================================
+Test Hapus route dengan gateway null0 pada router1
+============================================================
+router ospf 1
+no discard-route external
+
+Konfigurasi Add route Gateway null0 Router 1
+===============================================
+router ospf 1
+discard-route external
+
+
+

@@ -1,0 +1,107 @@
+Router 1
+int fa0/0
+no sh
+ip add 12.12.12.1 255.255.255.0
+desc TO Router2
+
+int lo0
+ip add 11.11.11.1 255.255.255.255
+
+int lo1
+ip add 11.11.11.2 255.255.255.255
+
+int lo2
+ip add 11.11.11.3 255.255.255.255
+
+int lo3
+ip add 11.11.11.4 255.255.255.255
+
+int lo4     
+ip add 11.11.11.5 255.255.255.255
+
+int lo5
+ip add 11.11.11.6 255.255.255.255
+
+router ospf 1
+net 12.12.12.0 0.0.0.255 are 0
+
+
+Router2
+
+int fa0/0
+no sh
+ip add 12.12.12.2 255.255.255.0
+desc TO Router1
+
+int fa0/1
+no sh
+ip add 23.23.23.2 255.255.255.0
+
+router ospf 1
+net 12.12.12.0 0.0.0.255 are 0
+net 23.23.23.0 0.0.0.255 are 0
+
+
+Router3
+int fa0/0
+no sh
+ip add 23.23.23.3 255.255.255.0
+desc TO Router2
+
+router ospf 1
+net 23.23.23.0 0.0.0.255 are 0
+
+
+=============================================
+Redistribute Default Route Pada Router1
+=======================================
+router ospf 1
+default-information originate always
+
+
+=================================
+Redistribute Static Pada Router1
+================================
+router ospf 1
+redistribute static subnets
+
+===================================
+Redistribute Connected pada Router1
+==================================
+router ospf 1
+redistribute connected subnets 
+
+===================================
+OSPF Redistribute RIP pada Router1
+==================================
+int lo6
+ip add 100.100.100.1 255.255.255.255
+
+router rip
+ve 2
+no aut
+net 100.100.100.0 
+
+router ospf 1
+redistribute rip subnets
+
+=================================
+OSPF Redistribute EIGRP Pada Router1
+=====================================
+int lo7
+ip add 101.101.101.1 255.255.255.255
+
+router eigrp 1
+no auto         
+net 101.101.101.0
+
+router ospf 1
+redistribute eigrp 1 subnets
+
+
+
+========================================
+Ubah OSPF External Type2 ke Type1
+========================================
+router ospf 1
+redistribute connected subnets metric-type 1
