@@ -1,0 +1,66 @@
+OSPF - GRE-Tunnel
+
+Konfigurasi  Router1
+Router1(config)#int fa0/0
+Router1(config-if)#desc TO Router2
+Router1(config-if)#ip add 12.12.12.1 255.255.255.0
+Router1(config-if)#no sh
+Router1(config-if)#int lo0
+Router1(config-if)#ip add 1.1.1.1 255.255.255.255
+Router1(config-if)#router ospf 1
+Router1(config-router)#net 1.1.1.1 0.0.0.0 are 0
+Router1(config-router)#net 12.12.12.0 0.0.0.255 are 1
+
+Konfigurasi Router2
+Router2(config)#int fa0/0
+Router2(config-if)#desc TO Router1
+Router2(config-if)#ip add 12.12.12.2 255.255.255.0
+Router2(config-if)#no sh
+Router2(config-if)#int fa0/1
+Router2(config-if)#desc TO Router3
+Router2(config-if)#ip add 23.23.23.2 255.255.255.0
+Router2(config-if)#no sh
+
+Router2(config-if)#int lo0
+Router2(config-if)#ip add 2.2.2.2 255.255.255.255
+Router2(config-if)#router ospf 1
+Router2(config-router)#net 12.12.12.0 0.0.0.255 are 1
+Router2(config-router)#net 2.2.2.2 0.0.0.0 are 1
+Router2(config-router)#net 23.23.23.0 0.0.0.255 are 2
+
+
+Konfigurasi Tunnel Router1
+Router1(config)#int tun0
+Router1(config-if)#ip add 102.102.102.1 255.255.255.0
+Router1(config-if)#tunnel source 12.12.12.1
+Router1(config-if)#tunnel destination 12.12.12.2
+Router1(config-if)#router ospf 1
+Router1(config-router)#net 102.102.102.0 0.0.0.255 are 0
+
+
+Konfigurasi Tunnel Router2
+Router2(config)#int tun0
+Router2(config-if)#ip add 102.102.102.2 255.255.255.0
+Router2(config-if)#tunnel source 12.12.12.2
+Router2(config-if)#tunnel destination 12.12.12.1
+Router2(config-if)#router ospf 1
+Router2(config-router)#net 102.102.102.0 0.0.0.255 are 0
+
+Konfigurasi Tunnel Router2
+Router2(config)#int tun1
+Router2(config-if)#tunnel source 23.23.23.2
+Router2(config-if)#tunnel destination 23.23.23.3
+Router2(config-if)#ip add 203.203.203.2 255.255.255.0
+Router2(config-if)#router ospf 1
+Router2(config-router)#net 203.203.203.0 0.0.0.255 are 0
+
+
+Konfigurasi Tunnel Router3
+Router3(config)#int tun0
+Router3(config-if)#tunnel source 23.23.23.3
+Router3(config-if)#tunnel destination 23.23.23.2
+Router3(config-if)#ip add 203.203.203.3 255.255.255.0
+Router3(config-if)#router ospf 1
+Router3(config-router)#net 203.203.203.0 0.0.0.255 are 0
+
+
