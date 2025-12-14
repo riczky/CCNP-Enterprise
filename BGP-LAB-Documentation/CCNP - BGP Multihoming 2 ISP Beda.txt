@@ -1,0 +1,194 @@
+CCNP - BGP Multihoming 2 ISP Beda
+
+
+Konfigurasi Router 1
+
+hostname Router1
+int fa0/0
+no sh
+ip add 14.14.14.1 255.255.255.0
+
+int fa0/1
+no sh
+ip add 12.12.12.1 255.255.255.0  
+
+int fa1/0
+no sh
+ip add 13.13.13.1 255.255.255.0
+
+int l0
+ip add 1.1.1.1 255.255.255.255
+
+router bgp 12
+neighbor 12.12.12.2 remote-as 12
+neighbor 14.14.14.4 remote-as 4
+neighbor 13.13.13.3 remote-as 3
+net 1.1.1.1 mask 255.255.255.255
+
+
+Konfigurasi Router2
+
+hostname Router2
+int fa0/0
+no sh
+ip add 24.24.24.2 255.255.255.0
+
+int fa0/1
+no sh
+ip add 12.12.12.2 255.255.255.0
+
+int fa1/0
+no sh
+ip add 23.23.23.2 255.255.255.0
+
+int l0 
+ip add 2.2.2.2 255.255.255.255
+
+router bgp 12
+neighbor 12.12.12.1 remote-as 12
+neighbor 23.23.23.3 remote-as 3
+neighbor 24.24.24.4 remote-as 4
+net 2.2.2.2 mask 255.255.255.255
+
+
+Konfigurasi Router 3
+
+hostname Router3
+int fa0/0
+no sh
+ip add 13.13.13.3 255.255.255.0
+
+int fa0/1
+no sh
+ip add 23.23.23.3 255.255.255.0
+
+int l0    
+ip add 3.3.3.3 255.255.255.255
+
+router bgp 3
+neighbor 13.13.13.1 remote-as 12
+neighbor 23.23.23.2 remote-as 12
+net 3.3.3.3 mask 255.255.255.255
+
+
+
+Konfigurasi Router 4
+
+hostname Router4
+int fa0/0
+no sh
+ip add 14.14.14.4 255.255.255.0 
+
+int fa0/1
+no sh
+ip add 24.24.24.4 255.255.255.0
+
+int l0     
+ip add 4.4.4.4 255.255.255.255
+
+router bgp 4
+neighbor 14.14.14.1 remote-as 12
+neighbor 24.24.24.2 remote-as 12
+net 4.4.4.4 mask 255.255.255.255
+
+
+-----------------------------------------------
+Testing Matikan Jalur via Router1 dari Router4
+
+Konfigurasi Router 1
+
+int fa0/0
+sh
+
+
+Konfigurasi Router 4
+router bgp 4
+neighbor 14.14.14.1 weight 200
+
+do cle ip bgp *
+
+
+===================================================
+Lanjutan BGP Multihoming Load Balance
+
+
+Konfigurasi Router 4
+
+router bgp 4
+maximum-paths 2
+
+
+int fa0/0
+bandwidth 10240
+
+int fa0/1
+bandwidth 102400
+
+router bgp 4
+bgp dmzlink-bw
+neighbor 14.14.14.1 dmzlink-bw 
+neighbor 24.24.24.2 dmzlink-bw 
+do cle ip bgp *
+
+
+====================================================
+Lanjutan Multihoming 2 ISP Beda provider
+
+Konfigurasi Router 1,2,3,4
+
+R1(config)#no router bgp 12
+R2(config)#no router bgp 12
+R3(config)#no router bgp 3
+R4(config)#no router bgp 4
+
+
+
+Konfigurasi Router 1
+
+router bgp 1
+nei 13.13.13.3 remote-as 3
+nei 12.12.12.2 remote-as 2
+nei 14.14.14.4 remote-as 4
+net 1.1.1.1 mask 255.255.255.255
+
+Konfigurasi Router2
+
+router bgp 2
+nei 12.12.12.1 remote-as 1
+nei 23.23.23.3 remote-as 3
+nei 24.24.24.4 remote-as 4
+net 2.2.2.2 mask 255.255.255.255
+
+
+Konfigurasi Router 3
+
+router bgp 3
+nei 13.13.13.1 remote-as 1
+nei 23.23.23.2 remote-as 2
+net 3.3.3.3 mask 255.255.255.255
+
+Konfigurasi Router 4
+
+router bgp 4
+nei 14.14.14.1 remote-as 1
+nei 24.24.24.2 remote-as 2
+net 4.4.4.4 mask 255.255.255.255
+
+
+router bgp 4
+maximum-paths 2
+bgp bestpath as-path multipath-relax
+do cle ip bgp *
+
+
+int fa0/0
+bandwidth 10240  
+int fa0/1
+bandwidth 20480
+
+router bgp 4
+bgp dmzlink-bw 
+nei 14.14.14.1 dmzlink-bw 
+nei 24.24.24.2 dmzlink-bw 
+
+do cle ip bgp *

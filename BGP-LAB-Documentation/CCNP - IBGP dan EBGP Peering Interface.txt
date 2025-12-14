@@ -1,0 +1,55 @@
+CCNP - IBGP dan EBGP Peering Interface
+
+Router1
+
+hostname Router1
+int fa0/0
+ip add 12.12.12.1 255.255.255.0
+no sh
+
+int lo0
+ip add 1.1.1.1 255.255.255.255
+no sh
+
+router bgp 12
+neighbor 12.12.12.2 remote-as 12
+network 1.1.1.1 mask 255.255.255.255
+
+Router2
+
+hostname Router2
+int fa0/0
+ip add 12.12.12.2 255.255.255.0
+no sh
+
+int fa0/1
+ip add 23.23.23.2 255.255.255.0
+no sh
+
+int lo0
+ip add 2.2.2.2 255.255.255.255
+no sh
+
+
+router bgp 12
+neighbor 12.12.12.1 remote-as 12
+neighbor 23.23.23.3 remote-as 3
+network 12.12.12.0 mask 255.255.255.0
+network 23.23.23.0 mask 255.255.255.0
+network 2.2.2.2 mask 255.255.255.255
+
+Router 3
+
+hostname Router3
+int fa0/0
+ip add 23.23.23.3 255.255.255.0
+no sh
+
+int lo0
+ip add 3.3.3.3 255.255.255.255
+no sh
+
+router bgp 3
+neighbor 23.23.23.2 remote-as 12
+network 23.23.23.0 mask 255.255.255.0
+network 3.3.3.3 mask 255.255.255.255

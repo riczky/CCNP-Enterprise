@@ -1,0 +1,105 @@
+Site to site IP Sec VPN Tunnel
+
+Server1 
+192.168.1.2 255.255.255.0
+
+Server2 
+192.168.2.2 255.255.255.0
+
+Router 1
+int fa0/0
+ip add 192.168.1.1 255.255.255.0
+no sh
+
+! Phase-1 (ISAKMP / IKE v1)
+crypto isakmp policy 10
+ hash sha
+ authentication pre-share
+ group 2
+ lifetime 86400
+ exit
+crypto isakmp key MyRouting address 2.2.2.2
+
+! Phase-2 (IPSec Transform Set)
+crypto ipsec transform-set MyRouting esp-sha-hmac esp-3des
+mode tunnel
+exit
+
+
+! Access‐list untuk traffic yang dienkrip
+ip access-list ex TUNNEL-TRAFIC
+permit ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255
+exit
+
+! Crypto map
+crypto map MyRouting-VPN 10 ipsec-isakmp
+ set peer 2.2.2.2
+ set transform-set MyRouting
+ match address TUNNEL-TRAFFIC
+exit
+
+! Terapkan crypto map ke interface publik
+interface fa0/1       ! sesuaikan nama interface publik ke Internet
+ ip address 1.1.1.1 255.255.255.252  ! contoh
+ no sh
+ crypto map MyRouting-VPN
+
+! Routing lokal/rule firewall jika perlu
+ip route 192.168.2.0 255.255.255.0 2.2.2.2
+
+
+
+Verifikasi
+show crypto session
+
+
+Router2
+int fa0/1
+ip add 192.168.2.1 255.255.255.0
+no sh
+
+! Phase-1
+crypto isakmp policy 10
+ hash sha
+ authentication pre-share
+ group 2
+ lifetime 86400
+ exit
+crypto isakmp key MyRouting address 1.1.1.1
+
+! Phase-2
+crypto ipsec transform-set MyRouting esp-sha-hmac esp-3des
+mode tunnel
+exit
+
+! Access-list untuk traffic terenkripsi di sisi ini
+ip access-list ex TUNNEL-TRAFIC
+permit ip 192.168.2.0 0.0.0.255 192.168.1.0 0.0.0.255
+exit
+
+!access-list 110 permit ip 192.168.2.0 0.0.0.255 192.168.1.0 0.0.0.255
+
+! Crypto map
+crypto map MyRouting-VPN 10 ipsec-isakmp
+ set peer 1.1.1.1
+ set transform-set MyRouting
+ match address TUNNEL-TRAFFIC
+exit
+
+! Terapkan ke interface publik
+interface fa0/0   ! interface yang ke internet
+ ip address 2.2.2.2 255.255.255.252  ! contoh
+ no sh 
+crypto map MyRouting-VPN
+
+! Routing / firewall
+ip route 192.168.1.0 255.255.255.0 1.1.1.1
+
+Verifikasi
+show crypto session
+
+
+Test Ping
+1.1.1.1
+192.168.1.2
+

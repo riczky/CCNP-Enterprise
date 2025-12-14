@@ -1,0 +1,68 @@
+CCNP - BGP Backdoor
+
+
+Konfigurasi Router 1
+
+hostname Router1
+int fa0/0
+no sh
+ip add 12.12.12.1 255.255.255.0
+
+int fa0/1
+no sh
+ip add 13.13.13.1 255.255.255.0
+
+int l0 
+ip add 1.1.1.1 255.255.255.255
+
+router bgp 1
+nei 13.13.13.3 remote-as 3
+net 1.1.1.1 mask 255.255.255.255
+
+router ospf 1
+net 12.12.12.0 0.0.0.255 are 0
+net 1.1.1.1 0.0.0.0 are 0
+
+
+
+Konfigurasi Router2
+
+hostname Router2
+int fa0/0
+no sh
+ip add 12.12.12.2 255.255.255.0
+
+int fa0/1
+no sh
+ip add 23.23.23.2 255.255.255.0
+
+router bgp 2
+nei 23.23.23.3 remote-as 3
+
+router ospf 1
+net 12.12.12.0 0.0.0.255 are 0
+
+
+Konfigurasi Router 3
+
+hostname Router3
+int fa0/0
+no sh
+ip add 13.13.13.3 255.255.255.0
+
+int fa0/1
+no sh
+ip add 23.23.23.3 255.255.255.0
+
+router bgp 3
+nei 13.13.13.1 remote-as 1
+nei 23.23.23.2 remote-as 2
+
+
+
+--------------------------------------------
+
+Konfigurasi Backdoor pada Router 2
+
+router bgp 2
+net 1.1.1.1 mask 255.255.255.255 backdoor 

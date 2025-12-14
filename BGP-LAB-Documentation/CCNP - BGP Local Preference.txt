@@ -1,0 +1,144 @@
+CCNP - BGP Local Preference
+
+
+
+Konfigurasi Router1
+
+hostname Router1
+int fa0/0
+no sh
+ip add 12.12.12.1 255.255.255.0
+
+int fa0/1
+no sh
+ip add 14.14.14.1 255.255.255.0
+
+router bgp 1
+bgp confederation identifier 123
+bgp confederation peers 2
+neighbor 12.12.12.2 remote-as 2
+neighbor 12.12.12.2 next-hop-self
+neighbor 14.14.14.4 remote-as 4
+net 12.12.12.0 mask 255.255.255.0 
+net 14.14.14.0 mask 255.255.255.0
+
+Konfigurasi Router2
+
+hostname Router2
+int fa0/0
+no sh
+ip add 12.12.12.2 255.255.255.0
+
+int fa0/1
+no sh
+ip add 23.23.23.2 255.255.255.0
+
+router bgp 2
+bgp confederation identifier 123
+bgp confederation peers 1 3
+neighbor 12.12.12.1 remote-as 1
+neighbor 12.12.12.1 next-hop-self
+neighbor 23.23.23.3 remote-as 3
+neighbor 23.23.23.3 next-hop-self
+
+
+Konfigurasi Router3
+
+hostname Router3
+int fa0/0
+no sh
+ip add 23.23.23.3 255.255.255.0
+
+int fa0/1
+no sh
+ip add 34.34.34.3 255.255.255.0
+
+router bgp 3
+bgp confederation identifier 123
+bgp confederation peers 2
+neighbor 23.23.23.2 remote-as 2
+neighbor 23.23.23.2 next-hop-self
+neighbor 34.34.34.4 remote-as 4
+net 23.23.23.0 mask 255.255.255.0
+net 34.34.34.0 mask 255.255.255.0
+
+
+Konfigurasi Router4
+
+hostname Router4
+int fa0/1
+no sh
+ip add 14.14.14.4 255.255.255.0
+
+int fa0/0
+no sh
+ip add 34.34.34.4 255.255.255.0
+
+int l0
+ip add 4.4.4.4 255.255.255.255
+
+router bgp 4
+neighbor 14.14.14.1 remote-as 123
+neighbor 34.34.34.3 remote-as 123
+net 4.4.4.4 mask 255.255.255.255
+
+
+
+============================================
+Config Weight pada Router2
+
+access-list 1 permit 4.4.4.4
+
+route-map WEIGHT permit 10
+match ip address 1
+set weight 200
+route-map WIEGHT permit 20
+
+router bgp 2
+neighbor 23.23.23.3 route-map WEIGHT in
+
+do clear ip bgp *
+
+
+Config Lanjutan LAB Local Preference
+==============================================
+Konfigurasi Router2
+
+router bgp 2
+no neighbor 23.23.23.3 route-map WEIGHT in
+
+
+Konfigurasi Router1
+access-list 2 permit 4.4.4.4
+route-map PREFERENCE permit 10
+match ip address 2
+set local-preference 200
+route-map PREFERENCE permit 20
+
+router bgp 1
+neighbor 14.14.14.4 route-map PREFERENCE in  
+
+do clea ip bgp *
+
+
+Konfigurasi Router3
+access-list 2 permit 4.4.4.4
+route-map PREFERENCE permit 10
+match ip address 2
+set local-preference 300
+route-map PREFERENCE permit 20
+
+router bgp 3
+neighbor 34.34.34.4 route-map PREFERENCE in  
+
+do clea ip bgp *
+
+
+
+
+
+
+
+
+
+

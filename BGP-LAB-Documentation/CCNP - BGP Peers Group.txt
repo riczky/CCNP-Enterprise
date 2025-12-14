@@ -1,0 +1,113 @@
+CCNP - BGP Peers Group
+
+
+Konfigurasi Router1
+
+hostname Router1
+int fa0/0
+no sh
+ip add 12.12.12.1 255.255.255.0
+
+int l0
+ip add 1.1.1.1 255.255.255.255
+
+router rip
+net 12.12.12.0  
+net 1.1.1.0
+
+
+Konfigurasi Router2
+
+hostname Router2
+int fa0/0
+no sh
+ip add 12.12.12.2 255.255.255.0
+
+int fa0/1
+no sh
+ip add 23.23.23.2 255.255.255.0
+
+int l0
+ip add 2.2.2.2 255.255.255.255
+
+router rip
+net 12.12.12.0
+net 23.23.23.0
+net 2.2.2.0
+
+
+Konfigurasi Router3
+
+
+hostname Router3
+int fa0/0
+no sh
+ip add 23.23.23.3 255.255.255.0
+
+int fa0/1
+no sh
+ip add 34.34.34.3 255.255.255.0
+
+int l0
+ip add 3.3.3.3 255.255.255.255
+
+router rip
+net 23.23.23.0
+net 34.34.34.0
+net 3.3.3.0
+
+
+Konfigurasi Router4
+
+hostname Router4
+int fa0/0
+no sh
+ip add 34.34.34.4 255.255.255.0
+
+int l0
+ip add 4.4.4.4 255.255.255.255
+
+router rip
+net 34.34.34.0
+net 4.4.4.0
+
+
+========================================
+Lanjut Peering
+
+Konfigurasi Router 1
+
+router bgp 1234
+neighbor INTERNAL peer-group 
+neighbor INTERNAL remote-as 1234
+nei INTERNAL update l0
+nei INTERNAL route-reflector-client 
+
+nei 2.2.2.2 peer-group INTERNAL
+nei 3.3.3.3 peer-group INTERNAL
+nei 4.4.4.4 peer-group INTERNAL
+
+
+
+Konfigurasi Router 2
+
+router bgp 1234        
+nei 1.1.1.1 remote 1234
+nei 1.1.1.1 update l0
+
+
+Konfigurasi Router 3 
+
+router bgp 1234
+nei 1.1.1.1 remote-as 1234
+nei 1.1.1.1 upda l0
+
+Konfigurasi Router 4
+
+int l1
+ip add 44.44.44.44 255.255.255.255
+
+router bgp 1234
+nei 1.1.1.1 remote 1234
+nei 1.1.1.1 update l0
+net 44.44.44.44 mask 255.255.255.255

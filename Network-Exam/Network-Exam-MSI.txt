@@ -1,0 +1,229 @@
+Network Exam MSI:
+==================================================
+
+Envi. Branch-01:
+
+RTR-BRANCH01:
+
+int fa0/1
+ip add 10.10.10.1 255.255.255.252
+no sh
+!
+int fa0/0
+ip add 192.168.1.1 255.255.255.0
+no sh
+!
+int lo0
+ip add 1.1.1.1 255.255.255.255
+no sh
+!
+!
+router ospf 1
+network 192.168.1.0 0.0.0.255 area 0
+network 10.10.10.0 0.0.0.3 area 0
+network 1.1.1.1 0.0.0.0 area 0
+exit
+!
+ip dhcp pool BRANCH01
+default 192.168.1.1
+network 192.168.1.0 255.255.255.0
+dns 8.8.8.8
+
+VPC 1:
+ip dhcp
+save
+
+WAN:
+int fa0/0
+ip add 10.10.10.2 255.255.255.252
+no sh
+
+int fa0/1
+ip add 40.40.40.1 255.255.255.252
+no sh
+
+router ospf 1
+network 10.10.10.0 0.0.0.3 area 0
+network 40.40.40.0 0.0.0.3 area 0
+
+
+Switch-Branch01:
+hostname Switch-Branch01
+show mac-address table
+
+
+Envi. BRANCH02:
+
+RTR-BRANCH02:
+
+int fa0/1
+ip add 192.168.2.1 255.255.255.0
+ip helper-address 3.3.3.3
+no sh
+
+int fa0/0
+ip add 20.20.20.1 255.255.255.252
+no sh
+
+int lo0
+ip add 2.2.2.2 255.255.255.255
+no sh
+
+router bgp 100
+neighbor 20.20.20.2 remote-as 200
+network 192.168.2.0 mask 255.255.255.0
+network 2.2.2.2 mask 255.255.255.255
+
+
+INT-01:
+int fa0/1
+ip add 20.20.20.2 255.255.255.252
+no sh
+
+int fa0/0
+ip add 30.30.30.1 255.255.255.252
+no sh
+
+int tu0
+ip add 192.168.3.2 255.255.255.252
+tunnel source 192.168.2.0 255.255.255.0
+tunnel dest 192.168.200.0 255.255.255.0
+
+router ospf 1
+network 192.168.3.0 0.0.0.3 area 0
+network 192.168.2.0 0.0.0.255 area 0
+
+router bgp 200
+neighbor 20.20.20.1 remote-as 100
+neighbor 30.30.30.2 remote-as 300
+network 20.20.20.0 mask 255.255.255.252
+network 30.30.30.0 mask 255.255.255.252
+
+Switch-Branch02:
+hostname Switch-Branch02
+show mac-address table
+
+Envi. Data Center:
+RTR-DC-01:
+int fa0/1
+ip add 40.40.40.2 255.255.255.252
+no sh
+
+int fa0/0
+ip add 192.168.100.1 255.255.255.0
+no sh
+
+int fa1/0
+ip add 50.50.50.1 255.255.255.252
+no sh
+
+int lo0
+ip add 3.3.3.3 255.255.255.255
+no sh
+
+router ospf 1
+network 40.40.40.0 0.0.0.3 area 0
+network 192.168.100.0 0.0.0.255 area 0
+network 3.3.3.3 0.0.0.0 area 0
+network 50.50.50.0 0.0.0.3 area 0
+network 192.168.2.0 0.0.0.255 area 0
+
+
+router bgp 300
+neighbor 50.50.50.2 remote-as 300
+network 50.50.50.0 mask 255.255.255.252
+network 192.168.100.0 mask 255.255.255.0
+network 3.3.3.3 mask 255.255.255.255
+
+!Mutual Redistribute OSPF <> BGP
+router ospf 1
+redistribute bgp 300 subnets
+router bgp 300
+redistribute ospf 1
+
+
+
+RTR-DC-02:
+int fa0/1
+ip add 30.30.30.2 255.255.255.252
+no sh
+
+int fa0/0
+ip add 192.168.200.1 255.255.255.0
+no sh
+
+int fa1/0
+ip add 50.50.50.2 255.255.255.252
+no sh
+
+int lo0 
+ip add 4.4.4.4 255.255.255.255
+no sh
+
+int tu0
+ip add 192.168.3.1 255.255.255.252
+tunnel source 192.168.200.0 255.255.255.0
+tunnel destination 192.168.2.0 255.255.255.0
+no sh
+
+router ospf 1
+network 192.168.200.0 0.0.0.255 area 0
+network 192.168.3.0 0.0.0.3 area 0
+
+router bgp 300
+neighbor 50.50.50.1 remote-as 300
+neighbor 30.30.30.1 remote-as 200
+network 30.30.30.0 mask 255.255.255.252
+network 50.50.50.0 mask 255.255.255.252
+network 192.168.2.0 mask 255.255.255.252
+network 4.4.4.4 mask 255.255.255.255
+
+
+
+Server 1:
+ip 192.168.100.100/24 192.168.100.1
+save
+
+Server 2:
+ip 192.168.200.200/24 192.168.200.1
+
+Switch-DC-01:
+hostname Switch-DC-01
+vlan 100
+name IT
+exit
+
+vlan 200
+name Finance
+
+
+int e0/0
+switchport mode access
+switchport access vlan 100
+
+Switch-DC-02:
+hostname Switch-DC-02
+vlan 100
+name IT
+exit
+
+vlan 200
+name Finance
+exit
+
+switchport mode access
+switchport access vlan 200
+
+
+
+
+
+
+
+PR:
+
+Mutual Redistribute antar BRANCH
+GRE Tunnel OSPF
+Vlan Primary Datacenter
+HSRP
+Spanning Tree
