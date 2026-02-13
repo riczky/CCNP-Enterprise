@@ -1,0 +1,49 @@
+Switching Tecnologies - STP Features: UPLinkFAST
+
+Switch 1
+
+hostname Switch1
+int e0/0
+switchport trunk encapsulation dot1q
+switchport mode trunk
+exit
+
+int e0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+exit
+
+vlan 12
+name P2PSwitch
+exit
+
+int vlan 12
+ip address 12.12.12.1 255.255.255.0
+no shutdown
+
+
+Switch 2
+hostname Switch2
+int e0/0
+switchport trunk encapsulation dot1q
+switchport mode trunk
+exit
+
+int e0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+exit
+
+vlan 12 
+name P2PSwitch
+exit
+int vlan12
+ip address 12.12.12.2 255.255.255.0
+no sh
+
+
+verifikasi spanning tree
+Switch2# show spanning-tree vlan12
+
+Tambahkan UPLINK FAST pada Switch1
+spanning-tree uplinkfast

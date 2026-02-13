@@ -1,0 +1,62 @@
+Hapus Konfigurasi sebelumnya
+
+Konfigurasi Router 2
+
+no router eigrp 23
+no interface tunnel23
+
+
+Konfigurasi Router 3
+
+no interface tunnel23
+no router eigrp 23
+
+Config IP-Sec
+
+Konfigurasi ISAKMP phase 1 dan phase 2
+Router2
+
+crypto isakmp policy 1
+encryption aes
+hash sha
+authentication pre-share
+group 2
+crypto isakmp key 0 IDNJOS address 13.13.13.3
+crypto ipsec transform-set ROSLIANA esp-aes esp-sha-hmac
+crypto map ROSLIANA12A 10 ipsec-isakmp
+set peer 13.13.13.3
+set transform-set ROSLIANA
+match address 100
+access-list 100 permit ip host 2.2.2.2 host 3.3.3.3
+
+
+Router3
+crypto isakmp policy 1
+encryption aes 
+hash sha
+authentication pre-share
+group 2
+crypto isakmp key 0 IDNJOS address 12.12.12.2
+crypto ipsec transform-set ROSLIANA esp-aes esp-sha-hmac
+crypto map ROSLIANA12A 10 ipsec-isakmp
+set peer 12.12.12.2
+set transform-set ROSLIANA
+match address 100
+access-list 100 permit ip host 3.3.3.3 host 2.2.2.2
+
+Konfigurasi static routing dan crypto map 
+Router2
+ip route 13.13.13.3 255.255.255.255 12.12.12.1
+int fa0/0
+crypto map ROSLIANA12A
+
+Router3
+ip route 12.12.12.2 255.255.255.255 13.13.13.1
+int fa0/0
+crypto map ROSLIANA12A
+
+
+Konfigurasi Router1
+
+ip route 2.2.2.2 255.255.255.255 12.12.12.2
+ip route 3.3.3.3 255.255.255.255 13.13.13.3

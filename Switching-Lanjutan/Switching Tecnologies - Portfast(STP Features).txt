@@ -1,0 +1,13 @@
+Switching Tecnologies - STP Features: Portfast
+
+
+VPCS
+
+ip 192.168.10.1/24
+ip 192.168.10.2/24
+
+Switch1
+
+Switch1(config)#int range e0/0-1
+Switch1(config-if-range)#spanning-tree portfast
+

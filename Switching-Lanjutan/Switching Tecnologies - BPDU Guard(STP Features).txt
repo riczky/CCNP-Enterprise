@@ -1,0 +1,10 @@
+Switching Tecnologies - STP Features: BPDU Guard
+
+
+Switch1
+
+int e0/0
+spanning-tree bpduguard enable
+
+Verifikasi
+show int e0/0

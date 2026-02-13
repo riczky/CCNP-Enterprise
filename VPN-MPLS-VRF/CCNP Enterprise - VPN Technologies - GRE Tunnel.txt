@@ -1,0 +1,104 @@
+CCNP Enterprise - VPN Technologies - GRE Tunnel
+
+Konfigurasi router 1
+
+hostname Router1
+int fa0/0
+ip add 12.12.12.1 255.255.255.0
+no sh
+
+int fa0/1
+ip add 13.13.13.1 255.255.255.0
+no sh
+
+int lo0
+ip add 8.8.8.8 255.255.255.255
+
+
+Konfigurasi Router 2
+
+hostname Router2
+int fa0/0
+ip address 12.12.12.2 255.255.255.0
+no sh
+
+int lo0
+ip address 2.2.2.2 255.255.255.255
+
+ip route 0.0.0.0 0.0.0.0 12.12.12.1
+
+
+Konfigurasi Router 3
+
+hostname Router3
+int fa0/0
+ip add 13.13.13.3 255.255.255.0
+no sh
+
+int lo0
+ip address 3.3.3.3 255.255.255.255
+
+ip route 0.0.0.0 0.0.0.0 13.13.13.1
+
+=============================================
+Lanjut Tunneling
+==========================================
+
+Konfigurasi Router 2
+
+int tun23
+ip add 172.16.10.1 255.255.255.252
+tunnel source fa0/0
+tunnel destination 13.13.13.3
+
+Konfigurasi Router 3
+
+int tun23
+ip add 172.16.10.2 255.255.255.252
+tunnel source fa0/0
+tunnel destination 12.12.12.2
+
+
+Verifikasi Tunnel.
+show int tun23 | i protocol
+
+
+Lanjut Routing EIGRP
+
+Konfigurasi Router2
+
+router eigrp 23
+network 172.16.10.1 0.0.0.0
+network 2.2.2.2 0.0.0.0
+no auto-summary
+exit
+
+
+Konfigurasi Router3
+
+router eigrp 23
+network 3.3.3.3 0.0.0.0
+network 172.16.10.2 0.0.0.0
+no auto-summary
+
+Verifikasi Routing pada R2 dan R3
+
+show ip route eigrp
+
+Test ping
+Router2#ping 3.3.3.3
+Router3#ping 2.2.2.2
+
+
+Verifikasi Traceroute lewat tunnel
+
+Router2#traceroute 3.3.3.3 source 2.2.2.2
+
+
+
+
+
+
+
+
+

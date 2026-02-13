@@ -1,0 +1,119 @@
+CCNP Enterprise - MPLS Backbone
+
+Router1
+hostname R1-PE
+int fa0/0
+ip add 192.168.10.1 255.255.255.0
+no sh
+
+int lo0
+ip add 10.10.10.1 255.255.255.255
+no sh
+
+
+Router2
+
+hostname R2-Provider
+int fa0/0
+ip add 192.168.10.2 255.255.255.0
+no sh
+
+int fa0/1
+ip add 192.168.20.2 255.255.255.0
+no sh
+
+int lo0
+ip add 10.10.10.2 255.255.255.255
+no sh
+
+Router3
+
+hostname R3-PE
+int fa0/0
+ip add 192.168.20.3 255.255.255.0
+no sh
+
+int lo0
+ip add 10.10.10.3 255.255.255.255
+no sh
+
+
+Lanjut Config IGP Routing
+
+Router1
+
+router ospf 10
+network 10.10.10.1 0.0.0.0 area 0
+network 192.168.10.1 0.0.0.0 area 0
+exit
+
+Router2
+
+router ospf 10
+network 10.10.10.2 0.0.0.0 area 0
+network 192.168.10.2 0.0.0.0 area 0
+network 192.168.20.2 0.0.0.0 area 0 
+
+Router3
+
+router ospf 10
+network 10.10.10.3 0.0.0.0 area 0
+network 192.168.20.3 0.0.0.0 area 0
+
+Verifikasi : show ip route
+Test ping R1,R2,R3: ping 10.10.10.1, ping 10.10.10.2, ping 10.10.10.3
+
+Lanjut Config BGP
+Router1
+
+router bgp 123
+neighbor 10.10.10.3 remote-as 123
+neighbor 10.10.10.3 update-source lo0
+exit
+
+
+Router3
+
+router bgp 123
+neighbor 10.10.10.1 remote-as 123
+neighbor 10.10.10.1 update-source lo0
+exit
+
+
+Lanjut Konfigurasi MPLS
+
+Router1
+
+mpls ip
+int fa0/0
+mpls ip
+
+Router2
+
+mpls ip
+int fa0/0
+mpls ip
+
+int fa0/1
+mpls ip
+
+
+Router3
+
+mpls ip
+int fa0/0
+mpls ip
+
+Verifikasi: show mpls forwarding
+
+
+
+
+
+
+
+
+
+
+
+

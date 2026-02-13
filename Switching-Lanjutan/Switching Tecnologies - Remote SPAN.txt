@@ -1,0 +1,44 @@
+Switching Tecnologies - Remote SPAN
+
+Lanjutan dari LAB SPAN
+Konfigurasi Switch 1
+
+no monitor session 1 source vlan 10
+no monitor session 1 dest interface et0/1
+
+vlan 100
+name RSPAN
+exit
+interface e0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+exit
+
+monitor session 1 source vlan 10
+monitor session 1 destination remote vlan 100
+
+
+Konfigurasi Switch2
+vlan 100
+name RSPAN
+exit
+
+int e0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+exit
+monitor session 1 source vlan 10
+monitor session 1 destination remote vlan 100
+
+
+vlan 10
+name PC
+int e0/1
+switchport mode access
+switchport access vlan 10
+
+
+Verifikasi
+
+SW# ping 192.168.10.1 souce vlan 10
+

@@ -1,0 +1,81 @@
+CCNP Enterprise - MPLS VPN
+
+Lanjutan dari materi MPLS Backbone
+
+Konfigurasi VRF R1-PE
+
+hostname R1-PE
+ip vrf Malaysia-Kiri
+rd 123:1
+route-target export 123:1
+route-target import 123:1
+exit
+
+ip vrf Indonesia-Kiri
+rd 123:2
+route-target export 123:2
+route-target import 123:2
+exit
+
+Konfigurasi VRF R3-PE
+hostname R3-PE
+ip vrf Malaysia-Kanan
+rd 123:1
+route-target export 123:1
+route-target import 123:1
+exit
+
+ip vrf Indonesia-Kanan
+rd 123:2
+route-target export 123:2
+route-target import 123:2
+exit
+
+
+Konfigurasi IP Adress PE menuju CE pada R1-PE
+int fa0/1
+ip vrf forwarding Malaysia-Kiri
+ip add 192.168.100.1 255.255.255.0
+no sh
+
+int fa1/0
+no switchport
+ip vrf forwarding Indonesia-Kiri
+ip add 192.168.100.1 255.255.255.0
+no sh
+exit
+
+Verifikasi: show vrf
+
+Konfigurasi IP Adress PE menuju CE pada R3-PE
+int fa1/1
+no switchport
+ip vrf forwarding Malaysia-Kanan
+ip add 192.168.200.1 255.255.255.0
+no sh
+
+int fa1/2
+no switchport
+ip vrf forwarding Indonesia-Kanan
+ip add 192.168.200.1 255.255.255.0
+no sh
+exit
+
+Verifikasi: show ip vrf
+
+Lanjut Aktifkan MP-BGP pada R1-PE
+router bgp 123
+address-family vpnv4
+neighbor 10.10.10.3 activate
+exit
+
+Lanjut Aktifkan MP-BGP pada R3-PE
+router bgp 123
+address-family vpnv4
+neighbor 10.10.10.1 activate
+exit
+
+Verifikasi pada R1-PE dan R3-PE
+show ip bgp vpnv4 all summary
+
+

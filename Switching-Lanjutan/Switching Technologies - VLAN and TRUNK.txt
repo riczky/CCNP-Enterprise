@@ -1,0 +1,42 @@
+Switching Technologies - VLAN and TRUNK
+
+Konfigurasi Switch atas
+
+hostname SW-ATAS
+vlan 10
+name Dev
+vlan 20
+name IT-Network
+
+int range e0/1-2
+switchport mode access
+switchport access vlan 10
+
+int e0/0
+switchport trunk encap dot1q
+switchport mode trunk
+
+
+hostname SW-BAWAH
+vlan 10
+name Dev
+vlan 20
+name IT-Network
+
+int range e0/1-2
+switchport mode access
+switchport access vlan 20
+
+int e0/0
+switchport trunk encap dot1q
+switchport mode trunk
+
+
+Verifikasi:
+
+show vlan br
+show int trunk
+
+Test ping sesama vlan
+PC>ping 192.168.10.2
+PC>ping 192.168.20.2

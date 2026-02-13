@@ -1,0 +1,67 @@
+Switching Technologies - Intervlan Routing
+
+Konfigurasi Switch atas
+
+hostname SW-ATAS
+vlan 10
+name Dev
+vlan 20
+name IT-Network
+
+int range e0/1-2
+switchport mode access
+switchport access vlan 10
+
+int e0/0
+switchport trunk encap dot1q
+switchport mode trunk
+
+int e0/3
+switchport trunk encap dot1q
+switchport mode trunk
+
+Konfigurasi Switch Bawah
+hostname SW-BAWAH
+vlan 10
+name Dev
+vlan 20
+name IT-Network
+
+int range e0/1-2
+switchport mode access
+switchport access vlan 20
+
+int e0/0
+switchport trunk encap dot1q
+switchport mode trunk
+
+
+
+Router 1
+hostname RTR-Gateway
+int e0/0
+no shut
+
+int e0/0.10
+encap dot1q 10
+ip address 192.168.10.1 255.255.255.0
+
+int e0/0.20
+encap dot1q 20
+ip address 192.168.20.1 255.255.255.0
+
+VPCS:
+
+ip 192.168.10.2/24 192.168.10.1
+ip 192.168.10.3/24 192.168.10.1
+ip 192.168.20.2/24 192.168.20.1
+ip 192.168.20.3/24 192.168.20.1
+
+Verifikasi:
+
+show vlan br
+show int trunk
+
+Test ping sesama vlan
+PC>ping 192.168.10.2
+PC>ping 192.168.20.2
