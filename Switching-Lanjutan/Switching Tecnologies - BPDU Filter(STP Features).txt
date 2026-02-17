@@ -1,0 +1,16 @@
+Switching Tecnologies - STP Features: BPDU Filter
+
+
+Konfigurasi Switch1
+
+int e0/0
+spanning-tree portfast
+spanning-tree bpdufilter enable
+
+Hapus nilai bdpu jika sebelumnya ada nilainya pada switch1
+
+clear spanning-tree counters int e0/0
+
+verifikasi
+show spanning-tree interface e0/0 detail
+

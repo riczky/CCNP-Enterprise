@@ -1,0 +1,36 @@
+Switching Tecnologies - Ether Channel Layer 3
+
+
+Konfigurasi Switch 1
+hostname Switch1
+ip routing
+int range e0/0-2
+shutdown
+no switchport
+channel-group 1 mode on
+no shutdown
+
+int po1
+no switchport
+ip address 12.12.12.1 255.255.255.0
+no sh
+
+Konfigurasi Switch 2
+hostname Switch2
+ip routing
+int range e0/0-2
+sh
+no switchport
+channel-group 1 mode on
+no sh
+exit
+
+int po1
+no switchport
+ip address 12.12.12.2 255.255.255.0
+no sh
+
+Verifikasi
+show etherchannel summary
+show spanning-tree
+

@@ -1,0 +1,43 @@
+Switching Tecnologies - Multiple Spanning Tree
+
+Konfigurasi Switch 2
+
+int e0/0
+no spanning-tree guard root
+
+Konfigurasi Switch 1
+vlan 10
+vlan 20
+vlan 30
+vlan 40
+vlan 50
+vlan 60
+
+spanning-tree mode mst
+spanning-tree mst configuration
+name Network
+revision 1
+instance 1 vlan 10,20,30
+instance 2 vlan 40,50,60
+spanning-tree mst 1 root secondary
+spanning-tree mst 2 root primary
+
+
+
+Konfigurasi Switch2
+spanning-tree mode mst
+spanning-tree mst configuration
+name Network
+revision 1
+instance 1 vlan 10,20,30
+instance 2 vlan 40,50,60
+spanning-tree mst 1 root secondary
+spanning-tree mst 2 root primary
+
+
+Verifikasi Switch2
+show spanning-tree mst configuration
+show spanning-tree mst 2
+
+Verifikasi Switch1 (Root)
+show spanning-tree mst 1

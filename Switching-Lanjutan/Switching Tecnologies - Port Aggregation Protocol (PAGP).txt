@@ -1,0 +1,27 @@
+Switching Tecnologies - Port Aggregation Protocol (PAGP)
+
+
+Konfigurasi Switch 1
+hostname Switch1
+int range e0/0-2
+channel-group 1 mode desirable
+
+int po1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+
+
+Konfigurasi Switch 2
+hostname Switch1
+int range e0/0-2
+channel-group 1 mode desirable
+
+int po1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+
+
+Verifikasi
+show etherchannel summary
+show spanning-tree
+

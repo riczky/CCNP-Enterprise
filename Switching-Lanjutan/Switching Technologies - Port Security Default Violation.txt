@@ -1,0 +1,38 @@
+Switching Technologies - Port Security Default Violation
+
+
+Verifikasi Mac Address pada Switch 1
+show int e0/0 | i address
+
+Konfigurasi Switch 1
+int e0/0
+switchport mode access
+switchport port-security
+switchport port-security maximum 2
+switchport port-security mac-address aabb.cc00.1000
+ex
+
+Verifikasi
+show port-security int e0/0
+show port-security address
+
+Konfigurasi Switch 2
+int e0/0
+switchport mode access
+switchport port-security
+switchport port-security maximum 2
+switchport port-security mac-address aabb.cc00.2000
+ex
+
+
+
+Testing
+
+Ubah mac address pada interface e0/0 di switch 1
+int e0/0
+mac-address aaaa.bbbb.cccc
+exit
+
+Verifikasi pada switch2
+show port-security int e0/0
+show int e0/0

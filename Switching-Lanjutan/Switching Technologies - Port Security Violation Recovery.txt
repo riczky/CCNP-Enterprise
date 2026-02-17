@@ -1,0 +1,20 @@
+Switching Technologies - Port Security Violation Recovery
+
+
+Verifikasi show int e0/0
+
+
+Konfigurasi Switch 2
+errdisable recovery cause psecure-violation
+errdisable recovery interval 60
+
+
+Verifikasi pada Switch2
+show int e0/0
+
+
+Alternative:
+
+int e0/0
+sh
+no sh

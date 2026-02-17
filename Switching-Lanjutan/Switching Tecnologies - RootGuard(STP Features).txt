@@ -1,0 +1,32 @@
+Switching Tecnologies - STP Features: RootGuard
+
+
+Konfigurasi Switch 1
+hostname Switch1
+int range e0/0-1
+switchport trunk encap dot1q
+switchport mode trunk
+
+Konfigurasi Switch 2
+hostname Switch2
+int range e0/0-1
+switchport trunk encap dot1q
+switchport mode trunk 
+
+spanning-tree vlan 1 root primary
+int e0/0
+spanning-tree guard root
+
+
+Verifikasi pada switch2
+show spanning-tree interface e0/0 detail
+
+debug spanning-tree events
+
+
+Set Priority pada Switch1
+spanning-tree vlan 1 priority 4096
+
+
+Verifikasi Switch2
+show spanning-tree inconsistentports
