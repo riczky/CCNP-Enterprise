@@ -1,0 +1,80 @@
+Switching Tehnologies - Virtual Router Redudancy Protocol (VRRP)
+
+
+Konfigurasi Switch
+
+hostname SW-Network
+int range e0/1-2
+switchport trunk encapsulation dot1q
+switchport mode trunk 
+
+Konfigurasi RTR-Kiri
+hostname RTR-Kiri
+int e0/0
+no sh
+ip address 192.168.1.1 255.255.255.0
+
+int e0/1
+no sh
+ip address 10.10.10.1 255.255.255.0
+
+Konfigurasi RTR-Kanan
+hostname RTR-Kanan
+int e0/0
+no sh
+ip address 192.168.1.2 255.255.255.0
+
+int e0/1
+no sh
+ip address 20.20.20.1 255.255.255.0
+
+Konfigurasi RTR-Atas
+hostname RTR-ATAS
+int e0/0
+no sh
+ip address 10.10.10.2 255.255.255.0
+
+int e0/1
+no sh
+ip address 20.20.20.2 255.255.255.0
+
+int e0/2
+ip address 30.30.30.1 255.255.255.0
+no sh
+
+Konfigurasi NAT Overload(RTR-Kiri)
+access-list 1 permit any
+ip nat inside source list 1 interface e0/1 overload
+ip route 0.0.0.0 0.0.0.0 10.10.10.2
+
+int e0/0
+ip nat inside
+int e0/1
+ip nat outside
+
+Konfigurasi NAT Overload(RTR-Kanan)
+access-list 1 permit any
+ip nat inside source list 1 interface e0/1 overload
+ip route 0.0.0.0 0.0.0.0 20.20.20.2
+
+int e0/0
+ip nat inside
+int e0/1
+ip nat outside
+
+Konfigurasi VRRP
+RTR-Kiri
+int e0/0
+vrrp 1 ip 192.168.1.123
+vrrp 1 preempt
+
+RTR-Kanan
+int e0/0
+vrrp 1 ip 192.168.1.123
+vrrp 1 preempt
+
+Konfigurasi PC 
+ip 192.168.1.3/24 192.168.1.123
+
+Konfigurasi Server
+ip 30.30.30.2/24 30.30.30.1

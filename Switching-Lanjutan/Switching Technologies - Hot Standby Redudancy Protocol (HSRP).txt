@@ -1,0 +1,78 @@
+Switching Tehnologies - Hot Standby Redudancy Protocol (HSRP)
+
+
+Konfigurasi Switch
+
+hostname SW-GURU
+int e0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+
+int e0/2
+switchport trunk encapsulation dot1q
+switchport mode trunk
+
+
+Konfigurasi Router Kiri
+hostname R-KIRI
+int e0/0
+no sh
+ip address 192.168.1.1 255.255.255.0
+
+int e0/1
+no sh
+ip address 10.10.10.1 255.255.255.0
+
+router eigrp 123
+network 10.10.10.0
+network 192.168.1.0
+no auto-summary
+
+int e0/0
+standby 1 ip 192.168.1.123
+standby 1 preempt
+
+
+Konfigurasi Router Kanan
+hostname R-KANAN
+int e0/0
+no sh
+ip address 192.168.1.2 255.255.255.0
+
+int e0/1
+no sh
+ip address 20.20.20.1 255.255.255.0
+router eigrp 123
+network 10.10.10.0
+network 192.168.1.0
+no auto-summary
+
+int e0/0
+standby 1 ip 192.168.1.123
+standby 1 preempt
+
+Konfigurasi Router Atas
+hostname R-ATAS
+int e0/0
+no sh
+ip address 10.10.10.2 255.255.255.0
+
+int e0/1
+no sh
+ip address 20.20.20.2 255.255.255.0
+
+int e0/2
+no sh
+ip address 30.30.30.1 255.255.255.0
+
+router eigrp 123
+network 10.10.10.0
+network 20.20.20.0
+network 30.30.30.0
+no auto-summary
+
+
+VPCS> ip 192.168.1.3/24 192.168.1.123
+Server> ip 30.30.30.2/24 30.30.30.1
+
+Verifikasi: show standby brief
