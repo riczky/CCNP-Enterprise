@@ -1,0 +1,1 @@
+Repositori ini berisi materi pembelajaran untuk sertifikasi CCNP Enterprise (Cisco Certified Network Professional Enterprise). Ditujukan bagi network engineer yang ingin meningkatkan kemampuan dalam desain, implementasi, operasi, dan troubleshooting jaringan enterprise.
